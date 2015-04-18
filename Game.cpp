@@ -30,7 +30,14 @@ Game::GameSquare::GameSquare()
 void Game::GameSquare::Display(CDC * deviceContextP)
 {
 	// This function will:
-
+	CBitmap testImage;
+	int res = testImage.LoadBitmapW(CString("PURPLE_BMP"));
+	CDC memDC;
+	memDC.CreateCompatibleDC(deviceContextP);
+	memDC.SelectObject(&testImage);
+	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
+	where.Width() + 2, where.Height() + 2, &memDC, 0, 0,
+		80, 80, SRCCOPY);
 }
 
 Game::Game()
@@ -77,10 +84,10 @@ void Game::Init(int R, int C, int M)
 	{
 		for (int c = 1; c <= numCols; c++)
 		{
-			grid[r][c].where.left = 721 + 85 * (c - 1);
-			grid[r][c].where.top = 19 + 85 * (r - 1);
-			grid[r][c].where.right = 806 + 85 * (c - 1);
-			grid[r][c].where.bottom = 104 + 85 * (r - 1);
+			grid[r][c].where.left = 721 + sqWidth * (c - 1);
+			grid[r][c].where.top = 19 + sqHeight * (r - 1);
+			grid[r][c].where.right = 806 + sqWidth * (c - 1);
+			grid[r][c].where.bottom = 104 + sqHeight * (r - 1);
 
 		}
 	}
@@ -121,15 +128,15 @@ void Game::Display(CFrameWnd * windowP)
 	CRect rect;
 	windowP->GetClientRect(&rect);
 	SetUp(rect);
-	for (int r = 1; r <= numRows; r++)
-		for (int c = 1; c <= numCols; c++)
-			grid[r][c].Display(&dc);
 	dc.SetBkMode(TRANSPARENT);
 	CDC memDC;
 	int res = memDC.CreateCompatibleDC(&dc);
 	memDC.SelectObject(&bgImage);
 	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1420, 720, SRCCOPY);
 	DeleteDC(memDC);
+	for (int r = 1; r <= numRows; r++)
+		for (int c = 1; c <= numCols; c++)
+			grid[r][c].Display(&dc);
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)

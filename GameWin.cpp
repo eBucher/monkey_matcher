@@ -13,8 +13,8 @@ GameWin::GameWin()
 
 	CString WindowTitle = "Sample Move/Match/Remove/Replace Game";
 	Create(NULL, WindowTitle);
-	numRows = 6;
-	numCols = 6;
+	numRows = 8;
+	numCols = 8;
 	numMoves = 25;
 	myGame.Init(numRows, numCols, numMoves);
 	firstTime = true;
