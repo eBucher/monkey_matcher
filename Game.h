@@ -26,6 +26,7 @@ public:
 	void Click(int x, int y, CFrameWnd * windowP);
 	void Message(CFrameWnd * windowP);
 	bool Done();
+	bool modified;
 private:
 	void FillIn();
 	void SetUp(CRect window);
@@ -57,7 +58,6 @@ private:
 	bool firstClickDone;
 	int sqWidth = 80;
 	int sqHeight = 80;
-	int margin = 15;
 	int windowWidth = 1418;
 	int windowHeight = 698;
 	int leftTileLeftX = 720;

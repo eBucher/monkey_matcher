@@ -42,6 +42,11 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 		myGame.Init(++numRows, ++numCols, numMoves += 5);
 		Invalidate(TRUE);
 	}
+	if (myGame.modified == true)
+	{
+		Invalidate(TRUE); // added this to try updating the window
+		myGame.modified = false;
+	}
 }
 
 BEGIN_MESSAGE_MAP(GameWin, CFrameWnd)

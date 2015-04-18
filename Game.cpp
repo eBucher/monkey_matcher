@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 
 static CBitmap images[NUMIMAGES];
@@ -49,7 +50,8 @@ Game::Game()
 	grid = new GameSquare *[3];
 	for (int r = 0; r < 3; r++)
 		grid[0] = new GameSquare[3];
-	int res0 = bgImage.LoadBitmap(CString("BACKGROUND_BMP"));
+	int res = bgImage.LoadBitmap(CString("BACKGROUND_BMP"));
+	int res0 = images[0].LoadBitmapW(CString(""));
 	int res1 = images[1].LoadBitmapW(CString("RED_BMP"));
 	int res2 = images[2].LoadBitmapW(CString("ORANGE_BMP"));
 	int res3 = images[3].LoadBitmapW(CString("YELLOW_BMP"));
@@ -136,6 +138,7 @@ void Game::Display(CFrameWnd * windowP)
 	SetUp(rect);
 	dc.SetBkMode(TRANSPARENT);
 	CDC memDC;
+	// Paints the background
 	int res = memDC.CreateCompatibleDC(&dc);
 	memDC.SelectObject(&bgImage);
 	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1418, 698, SRCCOPY);
@@ -148,25 +151,32 @@ void Game::Display(CFrameWnd * windowP)
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
+	/*
+	int index1 = x;
+	std::string test1 = std::to_string(index1);
+	int index2 = y;
+	std::string test2 = std::to_string(index2);
+	string combo = test1 + ", " + test2;
+	MessageBoxA(NULL, combo.c_str(), "testx", MB_OK);
+	*/
 	// This function will:
-	int col = 0; // col starts as 0 by default.
+	float col = 0; // col starts as 0 by default.
 	// If the click is within the game's borders, col changes to which square is clicked.
 	if (leftTileLeftX <= x <= rightTileRightX)
 	{
-		col = ceil((x - leftTileLeftX) / sqWidth);
+		col = ceil((x - leftTileLeftX * 1.0) / sqWidth);
 	}
 
 	int row = 0; // row starts as 0 by default.
 	// If the click is within the game's borders, row changes to which square is clicked.
 	if (topTileTopY <= y <= bottomTileBottomY)
 	{
-		row = ceil((y - topTileTopY) / sqHeight);
+		row = ceil((y - topTileTopY * 1.0) / sqHeight);
 	}
 
 	// If the click wasn't in the game, then this function ends in this if statement.
 	if (row < 1 || row > numRows || col < 1 || col > numCols)
 	{
-		AfxTrace(_T("YOU DIDNT CLICKED IN THE GAME SECTION\n"));
 		return;
 	}
 	AfxTrace(_T("YOU CLICKED IN THE GAME SECTION\n"));
@@ -202,10 +212,7 @@ void Game::SetUp(CRect rect)
 	windowHeight = rect.Height();
 	windowWidth = rect.Width();
 	// Creates the area that the game will be played in
-	gameRect = CRect(windowWidth - margin - gameBorder - sqWidth * numCols,
-		margin + gameBorder,
-		windowWidth - margin - gameBorder,
-		windowHeight - margin - gameBorder);
+	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
 
 
 }
@@ -222,7 +229,6 @@ void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 {
 	// This function will:
-
 	// Check to see if the user clicked the same gamesquare twice.
 	// If they did, the first one is unselected.
 	if (row == clickedRow1 && col == clickedCol1)
@@ -236,10 +242,14 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 		// update the variables storing which squares are clicked.
 		clickedRow2 = row;
 		clickedCol2 = col;
-		swap(grid[clickedRow1][clickedCol1],
-			grid[clickedRow2][clickedCol2]);
+		swap(grid[clickedRow1][clickedCol1].what,
+			grid[clickedRow2][clickedCol2].what);
+		swap(grid[clickedRow1][clickedCol1].flag,
+			grid[clickedRow2][clickedCol2].flag);
 		// Update the screen
 		Display(windowP);
+		modified = true;
+		AfxTrace(_T("WE'RE IN THE SECOND CLICK FUNCTION\n"));
 		//system("sleep 2"); // FIGURE OUT A WAY TO LAG IT
 		firstClickDone = false;
 		while (Check()) // While there is atleast one match
@@ -304,8 +314,10 @@ void Game::Drop()
 				else if (grid[checkingRow][j].flag == NONE &&
 					grid[checkingRow + 1][j].flag == GOOD)
 				{
-					swap(grid[checkingRow][j],
-						grid[checkingRow + 1][j]);
+					swap(grid[checkingRow][j].what,
+						grid[checkingRow + 1][j].what);
+					swap(grid[checkingRow][j].flag,
+						grid[checkingRow + 1][j].flag);
 					//Display();
 					//system("sleep .2");
 				}
