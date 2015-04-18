@@ -35,9 +35,9 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
 	memDC.SelectObject(&testImage);
-	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
-	where.Width() + 2, where.Height() + 2, &memDC, 0, 0,
-		80, 80, SRCCOPY);
+	deviceContextP->TransparentBlt(where.left, where.top,
+	where.Width(), where.Height(), &memDC, 0, 0,
+		85, 85, SRCCOPY);
 }
 
 Game::Game()
@@ -380,4 +380,3 @@ bool Game::HandleHorizontalMatch(int row_idx, int col_idx)
 	grid[row_idx][col_idx + 1].flag = GOOD;
 	return false;
 }
-
