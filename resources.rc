@@ -3,6 +3,11 @@
 // Project: CS215 Project 3 Spring 2015
 // Description of file contents:
 
-BACKGROUND_BMP BITMAP CS215BgImage.bmp
+BACKGROUND_BMP BITMAP BarrelBackground.bmp
 SPY_BMP BITMAP Spy80x80.bmp
-PURPLE_BMP BITMAP RedMonkey.bmp
+RED_BMP BITMAP RedMonkey.bmp
+ORANGE_BMP BITMAP OrangeMonkey.bmp
+YELLOW_BMP BITMAP YellowMonkey.bmp
+GREEN_BMP BITMAP GreenMonkey.bmp
+BLUE_BMP BITMAP BlueMonkey.bmp
+PURPLE_BMP BITMAP PurpleMonkey.bmp

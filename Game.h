@@ -9,7 +9,7 @@
 #include <afxwin.h>
 
 #define NUMSYMS 6
-#define NUMIMAGES 6
+#define NUMIMAGES 7
 
 enum flag_types { NONE, SELECTED, POSSIBLE, GOOD };
 
@@ -60,7 +60,7 @@ private:
 	int margin = 15;
 	int windowWidth = 1420;
 	int windowHeight = 718;
-	int gameBorder = 4;
+	int gameBorder = 5;
 	CRect gameRect;
 	CRect dataRect;
 	CRect specialRect;

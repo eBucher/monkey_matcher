@@ -34,10 +34,10 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 	int res = testImage.LoadBitmapW(CString("PURPLE_BMP"));
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
-	memDC.SelectObject(&testImage);
-	deviceContextP->TransparentBlt(where.left, where.top,
-	where.Width(), where.Height(), &memDC, 0, 0,
-		85, 85, SRCCOPY);
+	memDC.SelectObject(&images[what]);
+	deviceContextP->TransparentBlt(where.left+1, where.top+1,
+	where.Width()-1, where.Height()-1, &memDC, 0, 0,
+		80, 80, RGB(82,82,82));
 }
 
 Game::Game()
@@ -49,7 +49,13 @@ Game::Game()
 	grid = new GameSquare *[3];
 	for (int r = 0; r < 3; r++)
 		grid[0] = new GameSquare[3];
-	int res = bgImage.LoadBitmap(CString("BACKGROUND_BMP"));
+	int res0 = bgImage.LoadBitmap(CString("BACKGROUND_BMP"));
+	int res1 = images[1].LoadBitmapW(CString("RED_BMP"));
+	int res2 = images[2].LoadBitmapW(CString("ORANGE_BMP"));
+	int res3 = images[3].LoadBitmapW(CString("YELLOW_BMP"));
+	int res4 = images[4].LoadBitmapW(CString("GREEN_BMP"));
+	int res5 = images[5].LoadBitmapW(CString("BLUE_BMP"));
+	int res6 = images[6].LoadBitmapW(CString("PURPLE_BMP"));
 
 }
 
@@ -84,10 +90,10 @@ void Game::Init(int R, int C, int M)
 	{
 		for (int c = 1; c <= numCols; c++)
 		{
-			grid[r][c].where.left = 721 + sqWidth * (c - 1);
-			grid[r][c].where.top = 19 + sqHeight * (r - 1);
-			grid[r][c].where.right = 806 + sqWidth * (c - 1);
-			grid[r][c].where.bottom = 104 + sqHeight * (r - 1);
+			grid[r][c].where.left = 720 + (sqWidth) * (c - 1);
+			grid[r][c].where.top = 28 + sqHeight * (r - 1);
+			grid[r][c].where.right = 801 + (sqWidth) * (c - 1);
+			grid[r][c].where.bottom = 109 + sqHeight * (r - 1);
 
 		}
 	}
@@ -132,7 +138,7 @@ void Game::Display(CFrameWnd * windowP)
 	CDC memDC;
 	int res = memDC.CreateCompatibleDC(&dc);
 	memDC.SelectObject(&bgImage);
-	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1420, 720, SRCCOPY);
+	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1418, 698, SRCCOPY);
 	DeleteDC(memDC);
 	for (int r = 1; r <= numRows; r++)
 		for (int c = 1; c <= numCols; c++)
