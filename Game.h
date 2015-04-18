@@ -58,8 +58,12 @@ private:
 	int sqWidth = 80;
 	int sqHeight = 80;
 	int margin = 15;
-	int windowWidth = 1420;
-	int windowHeight = 718;
+	int windowWidth = 1418;
+	int windowHeight = 698;
+	int leftTileLeftX = 720;
+	int topTileTopY = 28;
+	int rightTileRightX = 1361;
+	int bottomTileBottomY = 669;
 	int gameBorder = 5;
 	CRect gameRect;
 	CRect dataRect;

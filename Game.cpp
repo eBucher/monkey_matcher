@@ -90,10 +90,10 @@ void Game::Init(int R, int C, int M)
 	{
 		for (int c = 1; c <= numCols; c++)
 		{
-			grid[r][c].where.left = 720 + (sqWidth) * (c - 1);
-			grid[r][c].where.top = 28 + sqHeight * (r - 1);
-			grid[r][c].where.right = 801 + (sqWidth) * (c - 1);
-			grid[r][c].where.bottom = 109 + sqHeight * (r - 1);
+			grid[r][c].where.left = leftTileLeftX + (sqWidth) * (c - 1);
+			grid[r][c].where.top = topTileTopY + sqHeight * (r - 1);
+			grid[r][c].where.right = leftTileLeftX + (sqWidth)* c + 1;
+			grid[r][c].where.bottom = topTileTopY + (sqHeight)* r + 1;
 
 		}
 	}
@@ -140,6 +140,7 @@ void Game::Display(CFrameWnd * windowP)
 	memDC.SelectObject(&bgImage);
 	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1418, 698, SRCCOPY);
 	DeleteDC(memDC);
+	// This paints the gamesquares
 	for (int r = 1; r <= numRows; r++)
 		for (int c = 1; c <= numCols; c++)
 			grid[r][c].Display(&dc);
@@ -148,25 +149,27 @@ void Game::Display(CFrameWnd * windowP)
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
 	// This function will:
-
 	int col = 0; // col starts as 0 by default.
 	// If the click is within the game's borders, col changes to which square is clicked.
-	if (windowWidth - margin - gameBorder - sqWidth * numCols <= x <= windowWidth - margin - gameBorder)
+	if (leftTileLeftX <= x <= rightTileRightX)
 	{
-		col = ceil(x - (windowWidth - margin - gameBorder - sqWidth * numCols) / sqWidth);
+		col = ceil((x - leftTileLeftX) / sqWidth);
 	}
 
 	int row = 0; // row starts as 0 by default.
 	// If the click is within the game's borders, row changes to which square is clicked.
-	if (windowHeight - margin - gameBorder <= y <= windowWidth - margin - gameBorder - sqWidth * numRows)
+	if (topTileTopY <= y <= bottomTileBottomY)
 	{
-		row = ceil(y - (windowWidth - margin - gameBorder - sqWidth * numRows) / sqWidth);
+		row = ceil((y - topTileTopY) / sqHeight);
 	}
 
 	// If the click wasn't in the game, then this function ends in this if statement.
 	if (row < 1 || row > numRows || col < 1 || col > numCols)
+	{
+		AfxTrace(_T("YOU DIDNT CLICKED IN THE GAME SECTION\n"));
 		return;
-
+	}
+	AfxTrace(_T("YOU CLICKED IN THE GAME SECTION\n"));
 	if (firstClickDone == false)
 		FirstClick(row, col, windowP);
 	else
