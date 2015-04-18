@@ -1,0 +1,8 @@
+// File: resources.rc
+// Author: 
+// Project: CS215 Project 3 Spring 2015
+// Description of file contents:
+
+BACKGROUND_BMP BITMAP CS215BgImage.bmp
+SPY_BMP BITMAP Spy80x80.bmp
+PURPLE_BMP BITMAP Purple.bmp
