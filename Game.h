@@ -26,7 +26,9 @@ public:
 	void Click(int x, int y, CFrameWnd * windowP);
 	void Message(CFrameWnd * windowP);
 	bool Done();
+	void ShowInformation(CFrameWnd * windowP);
 	bool modified;
+	CRect gameRect;
 private:
 	void FillIn();
 	void SetUp(CRect window);
@@ -65,13 +67,11 @@ private:
 	int rightTileRightX = 1361;
 	int bottomTileBottomY = 669;
 	int gameBorder = 5;
-	CRect gameRect;
 	CRect dataRect;
 	CRect specialRect;
 	CRect scoreRect;
 	CBitmap bgImage;
-	CBitmap testImage;
-	CBitmap thirdImage;
+
 };
 
 #endif

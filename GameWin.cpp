@@ -11,7 +11,7 @@ GameWin::GameWin()
 {
 	// This function will:
 
-	CString WindowTitle = "Sample Move/Match/Remove/Replace Game";
+	CString WindowTitle = "Monkey Matcher";
 	Create(NULL, WindowTitle);
 	numRows = 8;
 	numCols = 8;
@@ -44,7 +44,7 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	if (myGame.modified == true)
 	{
-		Invalidate(TRUE); // added this to try updating the window
+		InvalidateRect(myGame.gameRect); // added this to try updating the window
 		myGame.modified = false;
 	}
 }

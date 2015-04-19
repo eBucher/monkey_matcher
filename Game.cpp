@@ -31,8 +31,6 @@ Game::GameSquare::GameSquare()
 void Game::GameSquare::Display(CDC * deviceContextP)
 {
 	// This function will:
-	CBitmap testImage;
-	int res = testImage.LoadBitmapW(CString("PURPLE_BMP"));
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
 	memDC.SelectObject(&images[what]);
@@ -143,10 +141,17 @@ void Game::Display(CFrameWnd * windowP)
 	memDC.SelectObject(&bgImage);
 	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1418, 698, SRCCOPY);
 	DeleteDC(memDC);
+
 	// This paints the gamesquares
 	for (int r = 1; r <= numRows; r++)
 		for (int c = 1; c <= numCols; c++)
 			grid[r][c].Display(&dc);
+	
+	HFONT newfont = CreateFont(100, 0, 0, 0, 0, FALSE, 0, 0, 0, 1, 1, 1, DEFAULT_QUALITY, L"Arial Black");
+	dc.SelectObject(newfont);
+	SetTextColor(dc, RGB(248,234,220));
+	CString Message = "Score: 567\nMoves Left: 12\n";
+	dc.DrawText(Message, CRect(25, 130, 700, 500), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
@@ -213,6 +218,7 @@ void Game::SetUp(CRect rect)
 	windowWidth = rect.Width();
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
+	dataRect = CRect(0,0, leftTileLeftX, bottomTileBottomY);
 
 
 }
