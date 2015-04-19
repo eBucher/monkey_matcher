@@ -26,7 +26,7 @@ public:
 	void Click(int x, int y, CFrameWnd * windowP);
 	void Message(CFrameWnd * windowP);
 	bool Done();
-	void ShowInformation(CFrameWnd * windowP);
+	void ShowInformation(CDC * deviceContextP);
 	bool modified;
 	CRect gameRect;
 private:

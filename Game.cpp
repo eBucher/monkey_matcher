@@ -146,12 +146,18 @@ void Game::Display(CFrameWnd * windowP)
 	for (int r = 1; r <= numRows; r++)
 		for (int c = 1; c <= numCols; c++)
 			grid[r][c].Display(&dc);
-	
+	SetTextColor(dc, RGB(248, 234, 220));
+	ShowInformation(&dc);
+}
+
+void Game::ShowInformation(CDC * deviceContextP)
+{
+	CDC memDC;
+	memDC.CreateCompatibleDC(deviceContextP);
 	HFONT newfont = CreateFont(100, 0, 0, 0, 0, FALSE, 0, 0, 0, 1, 1, 1, DEFAULT_QUALITY, L"Arial Black");
-	dc.SelectObject(newfont);
-	SetTextColor(dc, RGB(248,234,220));
+	deviceContextP->SelectObject(newfont);
 	CString Message = "Score: 567\nMoves Left: 12\n";
-	dc.DrawText(Message, CRect(25, 130, 700, 500), DT_LEFT); // Draws text on the screen in a rectangle
+	deviceContextP->DrawText(Message, CRect(25, 130, 700, 800), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
