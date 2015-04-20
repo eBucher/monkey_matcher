@@ -1,5 +1,5 @@
 // File: Game.cpp
-// Author: 
+// Author: Erich Bucher
 // Project: CS215 Project 3 Spring 2015
 // Description of file contents:
 
@@ -17,7 +17,8 @@ using namespace std;
 
 Game::GameSquare::GameSquare()
 {
-	// This function will:
+	// This function will initially set every what value to 0
+	// and every flag to NONE.
 
 	what = 0;
 	flag = NONE;
@@ -34,9 +35,9 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
 	memDC.SelectObject(&images[what]);
-	deviceContextP->TransparentBlt(where.left+1, where.top+1,
-	where.Width()-1, where.Height()-1, &memDC, 0, 0,
-		80, 80, RGB(82,82,82));
+	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
+	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
+		80, 80, RGB(82, 82, 82));
 }
 
 Game::Game()
@@ -76,7 +77,7 @@ void Game::Init(int R, int C, int M)
 	numRows = R;
 	numCols = C;
 	numMoves = M;
-	numMoves = M;
+	movesLeft = M;
 	score = 0;
 	clickedRow1 = clickedCol1 = clickedRow2 = clickedCol2 = 0;
 	// Create Grid, which is a 2d array of gridsquares
@@ -90,7 +91,7 @@ void Game::Init(int R, int C, int M)
 	{
 		for (int c = 1; c <= numCols; c++)
 		{
-			grid[r][c].where.left = leftTileLeftX + (sqWidth) * (c - 1);
+			grid[r][c].where.left = leftTileLeftX + (sqWidth)* (c - 1);
 			grid[r][c].where.top = topTileTopY + sqHeight * (r - 1);
 			grid[r][c].where.right = leftTileLeftX + (sqWidth)* c + 1;
 			grid[r][c].where.bottom = topTileTopY + (sqHeight)* r + 1;
@@ -152,25 +153,25 @@ void Game::Display(CFrameWnd * windowP)
 
 void Game::ShowInformation(CDC * deviceContextP)
 {
+	// This function is called to put the text on the left side of the screen.
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
+	// Create a new font that will be used for the text
 	HFONT newfont = CreateFont(100, 0, 0, 0, 0, FALSE, 0, 0, 0, 1, 1, 1, DEFAULT_QUALITY, L"Arial Black");
 	deviceContextP->SelectObject(newfont);
-	CString Message = "Score: 567\nMoves Left: 12\n";
+	// These CStrings are for converting integer values to CStrings so they can be displayed on the screen
+	CString scoreCString;
+	scoreCString.Format(_T("%i"), score);
+	CString movesLeftCString;
+	movesLeftCString.Format(_T("%i"), movesLeft);
+	// This is where all the text gets put on the screen.
+	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString;
 	deviceContextP->DrawText(Message, CRect(25, 130, 700, 800), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
-	/*
-	int index1 = x;
-	std::string test1 = std::to_string(index1);
-	int index2 = y;
-	std::string test2 = std::to_string(index2);
-	string combo = test1 + ", " + test2;
-	MessageBoxA(NULL, combo.c_str(), "testx", MB_OK);
-	*/
-	// This function will:
+	// This function will handle everything that needs to happen when the user makes a click.
 	float col = 0; // col starts as 0 by default.
 	// If the click is within the game's borders, col changes to which square is clicked.
 	if (leftTileLeftX <= x <= rightTileRightX)
@@ -190,7 +191,10 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 	{
 		return;
 	}
+	// This is just here for testing purposes.
 	AfxTrace(_T("YOU CLICKED IN THE GAME SECTION\n"));
+	// This handles the click differently depending on if was valid and whether
+	// it is the first or second click that the user makes.
 	if (firstClickDone == false)
 		FirstClick(row, col, windowP);
 	else
@@ -199,7 +203,7 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 
 void Game::Message(CFrameWnd * windowP)
 {
-	// This function will:
+	// This function will pop up a window at the end of a game.
 
 	CString message = "Put your end of game message here.\nUse backslash and n to create\nmultiple lines.";
 	CString title = "Winner";
@@ -224,14 +228,15 @@ void Game::SetUp(CRect rect)
 	windowWidth = rect.Width();
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
-	dataRect = CRect(0,0, leftTileLeftX, bottomTileBottomY);
+	dataRect = CRect(0, 0, leftTileLeftX, bottomTileBottomY);
 
 
 }
 
 void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 {
-	// This function will:
+	// This function will handle the first click that the user
+	// makes on a turn.
 	firstClickDone = true;
 	clickedRow1 = row;
 	clickedCol1 = col;

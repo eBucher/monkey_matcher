@@ -18,6 +18,7 @@ GameWin::GameWin()
 	numMoves = 25;
 	myGame.Init(numRows, numCols, numMoves);
 	firstTime = true;
+	myGame.Display(this);
 }
 
 afx_msg void GameWin::OnPaint()
@@ -44,7 +45,7 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	if (myGame.modified == true)
 	{
-		InvalidateRect(myGame.gameRect); // added this to try updating the window
+		Invalidate(TRUE); // added this to try updating the window
 		myGame.modified = false;
 	}
 }
