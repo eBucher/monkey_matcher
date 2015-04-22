@@ -12,10 +12,12 @@ GameWin::GameWin()
 	// This function will:
 
 	CString WindowTitle = "Monkey Matcher";
-	Create(NULL, WindowTitle);
+	// This makes it so the window cannot change sizes.
+	DWORD fixedWindow = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+	Create(NULL, WindowTitle, fixedWindow);
 	numRows = 8;
 	numCols = 8;
-	numMoves = 25;
+	numMoves = 20;
 	myGame.Init(numRows, numCols, numMoves);
 	firstTime = true;
 	myGame.Display(this);
@@ -40,7 +42,7 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 	if (myGame.Done())
 	{
 		myGame.Message(this);
-		myGame.Init(++numRows, ++numCols, numMoves += 5);
+		myGame.Init(numRows, numCols, numMoves);
 		Invalidate(TRUE);
 	}
 	if (myGame.modified == true)

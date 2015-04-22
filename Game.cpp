@@ -213,16 +213,19 @@ void Game::Message(CFrameWnd * windowP)
 
 bool Game::Done()
 {
-	// This function will:
-
-	return false;
+	// This function will return true once movesLeft == 0. Otherwise, it will
+	// return false.
+	if (movesLeft)
+		return false;
+	return true;
 }
 
 
 
 void Game::SetUp(CRect rect)
 {
-	// This function will:
+	// This function should only be called once. Its purpose is to set up
+	// boundaries for certain areas of the game screen.
 
 	windowHeight = rect.Height();
 	windowWidth = rect.Width();
