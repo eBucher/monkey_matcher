@@ -11,5 +11,6 @@ GREEN_BMP BITMAP GreenMonkey.bmp
 BLUE_BMP BITMAP BlueMonkey.bmp
 PURPLE_BMP BITMAP PurpleMonkey.bmp
 SQUARE_SELECTOR_BMP BITMAP SquareSelector.bmp
+HELP_BTN_BMP BITMAP HelpButton.bmp
 
 SOUND_WAV WAVE "MatchSound.wav"

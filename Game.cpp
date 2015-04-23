@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <mmsystem.h>
+#include <fstream>
 
 
 static CBitmap images[NUMIMAGES];
@@ -59,6 +60,7 @@ Game::Game()
 	res = images[5].LoadBitmapW(CString("BLUE_BMP"));
 	res = images[6].LoadBitmapW(CString("PURPLE_BMP"));
 	res = squareSelector.LoadBitmapW(CString("SQUARE_SELECTOR_BMP"));
+	res = helpBtn.LoadBitmapW(CString("HELP_BTN_BMP"));
 
 }
 
@@ -100,7 +102,13 @@ void Game::Init(int R, int C, int M)
 
 		}
 	}
-	// Put your code for generating a maze here (nothing is added here yet)
+	// Gets the highscore from HS.txt
+	ifstream input;
+	input.open("HS.txt");
+	input >> highScore;
+	TRACE("HIGH SCORE: %d", highScore);
+	input.close();
+
 	FillIn();
 
 }
@@ -155,8 +163,13 @@ void Game::Display(CFrameWnd * windowP)
 	{
 		memDC.SelectObject(&squareSelector);
 		dc.TransparentBlt(grid[clickedRow1][clickedCol1].where.left, grid[clickedRow1][clickedCol1].where.top,
-			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC, 0, 0, 80, 80, RGB(82,82,82));
+			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC, 0, 0, sqWidth, sqHeight, RGB(82,82,82));
 	}
+	// This paints the help button
+	memDC.SelectObject(&helpBtn);
+	dc.TransparentBlt(helpBtnRect.left, helpBtnRect.top,
+		helpBtnRect.Width(), helpBtnRect.Height(), &memDC, 0, 0, 172, 40, RGB(82,82,82));
+
 	DeleteDC(memDC);
 }
 
@@ -173,14 +186,24 @@ void Game::ShowInformation(CDC * deviceContextP)
 	scoreCString.Format(_T("%i"), score);
 	CString movesLeftCString;
 	movesLeftCString.Format(_T("%i"), movesLeft);
+	CString highScoreCString;
+	TRACE("HIGH SCORE: %d", highScore);
+	highScoreCString.Format(_T("%i"), highScore);
 	// This is where all the text gets put on the screen.
-	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString;
+	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString + "\nHigh Score: " + highScoreCString;
 	deviceContextP->DrawText(Message, CRect(25, 130, 700, 800), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
 	// This function will handle everything that needs to happen when the user makes a click.
+	TRACE("width: %d, height: %d", windowWidth, windowHeight);
+	// See if the instructions button was pressed.
+	if (helpBtnRect.left <= x && x <= helpBtnRect.right && helpBtnRect.top <= y && y <= helpBtnRect.bottom)
+	{
+		Instructions(windowP);
+	}
+
 	float col = 0; // col starts as 0 by default.
 	// If the click is within the game's borders, col changes to which square is clicked.
 	if (leftTileLeftX <= x <= rightTileRightX)
@@ -239,6 +262,7 @@ void Game::SetUp(CRect rect)
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
 	dataRect = CRect(0, 0, leftTileLeftX, bottomTileBottomY);
+	helpBtnRect = CRect(480, 625, 480 + 172, 625 + 40);
 
 
 }

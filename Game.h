@@ -69,12 +69,16 @@ private:
 	int topTileTopY = 28;
 	int rightTileRightX = 1361;
 	int bottomTileBottomY = 669;
-	int gameBorder = 5;
+	char highScore;
+	bool helpBtnPainted;
+	bool backgroundPainted;
 	CRect gameRect;
 	CRect dataRect;
 	CRect specialRect;
+	CRect helpBtnRect;
 	CBitmap bgImage;
 	CBitmap squareSelector;
+	CBitmap helpBtn;
 
 };
 
