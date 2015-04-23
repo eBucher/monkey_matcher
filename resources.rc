@@ -4,10 +4,12 @@
 // Description of file contents:
 
 BACKGROUND_BMP BITMAP BarrelBackground.bmp
-SPY_BMP BITMAP Spy80x80.bmp
 RED_BMP BITMAP RedMonkey.bmp
 ORANGE_BMP BITMAP OrangeMonkey.bmp
 YELLOW_BMP BITMAP YellowMonkey.bmp
 GREEN_BMP BITMAP GreenMonkey.bmp
 BLUE_BMP BITMAP BlueMonkey.bmp
 PURPLE_BMP BITMAP PurpleMonkey.bmp
+SQUARE_SELECTOR_BMP BITMAP SquareSelector.bmp
+
+SOUND_WAV WAVE "MatchSound.wav"

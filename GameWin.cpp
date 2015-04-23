@@ -6,6 +6,7 @@
 #include <afxwin.h>
 #include "GameWin.h"
 #include <iostream>
+#include <mmsystem.h>
 
 GameWin::GameWin()
 {
@@ -26,7 +27,6 @@ GameWin::GameWin()
 afx_msg void GameWin::OnPaint()
 {
 	// This function will:
-
 	myGame.Display(this);
 	if (firstTime)
 	{
@@ -45,9 +45,10 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 		myGame.Init(numRows, numCols, numMoves);
 		Invalidate(TRUE);
 	}
+	// This is to update the entire window
 	if (myGame.modified == true)
 	{
-		Invalidate(TRUE); // added this to try updating the window
+		Invalidate(TRUE);
 		myGame.modified = false;
 	}
 }

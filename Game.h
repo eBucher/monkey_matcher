@@ -16,6 +16,7 @@ enum flag_types { NONE, SELECTED, POSSIBLE, GOOD };
 class Game
 {
 public:
+	// Functions
 	Game();
 	Game(const Game & other);
 	~Game();
@@ -28,8 +29,8 @@ public:
 	bool Done();
 	void ShowInformation(CDC * deviceContextP);
 	bool modified;
-	CRect gameRect;
 private:
+	// Functions
 	void FillIn();
 	void SetUp(CRect window);
 	void FirstClick(int row, int col, CFrameWnd * windowP);
@@ -41,6 +42,7 @@ private:
 	bool IsHorizontalMatch(int row_idx, int col_idx);
 	bool HandleVerticalMatch(int row_idx, int col_idx);
 	bool HandleHorizontalMatch(int row_idx, int col_idx);
+	bool madeMatches;
 	struct GameSquare
 	{
 		GameSquare();
@@ -49,6 +51,7 @@ private:
 		flag_types flag;
 		CRect where;
 	};
+	// Variables
 	GameSquare ** grid;
 	int numRows, numCols;
 	int numMoves;
@@ -67,10 +70,11 @@ private:
 	int rightTileRightX = 1361;
 	int bottomTileBottomY = 669;
 	int gameBorder = 5;
+	CRect gameRect;
 	CRect dataRect;
 	CRect specialRect;
-	CRect scoreRect;
 	CBitmap bgImage;
+	CBitmap squareSelector;
 
 };
 

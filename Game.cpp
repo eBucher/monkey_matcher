@@ -8,7 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <sstream>
+#include <mmsystem.h>
 
 
 static CBitmap images[NUMIMAGES];
@@ -49,14 +49,16 @@ Game::Game()
 	grid = new GameSquare *[3];
 	for (int r = 0; r < 3; r++)
 		grid[0] = new GameSquare[3];
+	// Load up all of the images needed for the game
 	int res = bgImage.LoadBitmap(CString("BACKGROUND_BMP"));
-	int res0 = images[0].LoadBitmapW(CString(""));
-	int res1 = images[1].LoadBitmapW(CString("RED_BMP"));
-	int res2 = images[2].LoadBitmapW(CString("ORANGE_BMP"));
-	int res3 = images[3].LoadBitmapW(CString("YELLOW_BMP"));
-	int res4 = images[4].LoadBitmapW(CString("GREEN_BMP"));
-	int res5 = images[5].LoadBitmapW(CString("BLUE_BMP"));
-	int res6 = images[6].LoadBitmapW(CString("PURPLE_BMP"));
+	res = images[0].LoadBitmapW(CString(""));
+	res = images[1].LoadBitmapW(CString("RED_BMP"));
+	res = images[2].LoadBitmapW(CString("ORANGE_BMP"));
+	res = images[3].LoadBitmapW(CString("YELLOW_BMP"));
+	res = images[4].LoadBitmapW(CString("GREEN_BMP"));
+	res = images[5].LoadBitmapW(CString("BLUE_BMP"));
+	res = images[6].LoadBitmapW(CString("PURPLE_BMP"));
+	res = squareSelector.LoadBitmapW(CString("SQUARE_SELECTOR_BMP"));
 
 }
 
@@ -141,7 +143,6 @@ void Game::Display(CFrameWnd * windowP)
 	int res = memDC.CreateCompatibleDC(&dc);
 	memDC.SelectObject(&bgImage);
 	dc.TransparentBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, 1418, 698, SRCCOPY);
-	DeleteDC(memDC);
 
 	// This paints the gamesquares
 	for (int r = 1; r <= numRows; r++)
@@ -149,6 +150,14 @@ void Game::Display(CFrameWnd * windowP)
 			grid[r][c].Display(&dc);
 	SetTextColor(dc, RGB(248, 234, 220));
 	ShowInformation(&dc);
+	// This paints the Square Selector if the first click has been made
+	if (firstClickDone == true && clickedCol2 == 0 && clickedRow2 == 0)
+	{
+		memDC.SelectObject(&squareSelector);
+		dc.TransparentBlt(grid[clickedRow1][clickedCol1].where.left, grid[clickedRow1][clickedCol1].where.top,
+			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC, 0, 0, 80, 80, RGB(82,82,82));
+	}
+	DeleteDC(memDC);
 }
 
 void Game::ShowInformation(CDC * deviceContextP)
@@ -191,8 +200,6 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 	{
 		return;
 	}
-	// This is just here for testing purposes.
-	AfxTrace(_T("YOU CLICKED IN THE GAME SECTION\n"));
 	// This handles the click differently depending on if was valid and whether
 	// it is the first or second click that the user makes.
 	if (firstClickDone == false)
@@ -243,12 +250,14 @@ void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 	firstClickDone = true;
 	clickedRow1 = row;
 	clickedCol1 = col;
+	modified = true;
 
 }
 
 void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 {
 	// This function will:
+	modified = true;
 	// Check to see if the user clicked the same gamesquare twice.
 	// If they did, the first one is unselected.
 	if (row == clickedRow1 && col == clickedCol1)
@@ -266,19 +275,17 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 			grid[clickedRow2][clickedCol2].what);
 		swap(grid[clickedRow1][clickedCol1].flag,
 			grid[clickedRow2][clickedCol2].flag);
-		// Update the screen
-		Display(windowP);
-		modified = true;
-		AfxTrace(_T("WE'RE IN THE SECOND CLICK FUNCTION\n"));
 		//system("sleep 2"); // FIGURE OUT A WAY TO LAG IT
 		firstClickDone = false;
+		madeMatches = false;
 		while (Check()) // While there is atleast one match
 		{
 			Drop();
-			//system("sleep 1");
 			Replace();
-			//system("sleep 1");
+			madeMatches = true;
 		}
+		if (madeMatches)
+			BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_SYNC);
 		clickedRow1 = clickedRow2 = clickedCol1 = clickedCol2 = 0;
 		movesLeft--;
 	}
