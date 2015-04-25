@@ -88,10 +88,9 @@ private:
 	int rightTileRightX = 1361;
 	int bottomTileBottomY = 669;
 	char highScore;
-	bool helpBtnPainted;
 	bool madeMatches;
 	bool startNewGame;
-	std::string helpBtnStatus; // UP is dark, DOWN is light
+	bool showSquareSelector;
 	CRect specialRect;
 	CBitmap bgImage;
 	CBitmap squareSelector;

@@ -8,7 +8,6 @@
 #include <iostream>
 #include <mmsystem.h>
 
-#define WM_ERASEBKGND true
 
 GameWin::GameWin()
 {
@@ -46,13 +45,13 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		myGame.Message(this);
 		myGame.Init(numRows, numCols, numMoves);
-		Invalidate(TRUE);
+		Invalidate(FALSE);
 	}
 	// If the game has changed from the user making a click
 	// This is to update the entire window
 	if (myGame.modified == true)
 	{
-		Invalidate(TRUE);
+		Invalidate(FALSE);
 		myGame.modified = false;
 	}
 }

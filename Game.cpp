@@ -29,6 +29,7 @@ void Game::HelpButton::Display(CDC * deviceContextP)
 	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
 	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
 		172, 40, RGB(82, 82, 82));
+	DeleteDC(memDC);
 }
 
 Game::NewGameButton::NewGameButton()
@@ -45,6 +46,7 @@ void Game::NewGameButton::Display(CDC * deviceContextP)
 	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
 	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
 		172, 40, RGB(82, 82, 82));
+	DeleteDC(memDC);
 }
 
 Game::GameSquare::GameSquare()
@@ -70,6 +72,7 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
 	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
 		80, 80, RGB(82, 82, 82));
+	DeleteDC(memDC);
 }
 
 Game::Game()
@@ -184,16 +187,17 @@ void Game::Display(CFrameWnd * windowP)
 	SetTextColor(dc, RGB(248, 234, 220));
 	ShowInformation(&dc);
 	// This paints the Square Selector if the first click has been made
-	if (firstClickDone == true && clickedCol2 == 0 && clickedRow2 == 0)
+	if (showSquareSelector == true)
 	{
 		memDC.SelectObject(&squareSelector);
 		dc.TransparentBlt(grid[clickedRow1][clickedCol1].where.left, grid[clickedRow1][clickedCol1].where.top,
 			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC,
 			0, 0, sqWidth, sqHeight, RGB(82,82,82));
+		showSquareSelector = false;
 	}
 	// This paints the help and new game buttons
-	HButton.Display(&dc);
-	NGButton.Display(&dc);
+	//HButton.Display(&dc);
+	//NGButton.Display(&dc);
 
 	DeleteDC(memDC);
 }
@@ -302,6 +306,7 @@ void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 	clickedRow1 = row;
 	clickedCol1 = col;
 	modified = true;
+	showSquareSelector = true;
 
 }
 
