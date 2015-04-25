@@ -35,9 +35,19 @@ public:
 		HelpButton();
 		void Display(CDC * deviceContextP);
 		CRect where;
-		CBitmap downImage;
+		CBitmap HelpButtonImg;
+	};
+	struct NewGameButton
+	{
+		NewGameButton();
+		void Display(CDC * deviceContextP);
+		CRect where;
+		CBitmap NGButtonImg;
 	};
 	HelpButton HButton;
+	NewGameButton NGButton;
+	CRect gameRect;
+	CRect dataRect;
 private:
 	// Functions
 	void FillIn();
@@ -51,7 +61,7 @@ private:
 	bool IsHorizontalMatch(int row_idx, int col_idx);
 	bool HandleVerticalMatch(int row_idx, int col_idx);
 	bool HandleHorizontalMatch(int row_idx, int col_idx);
-	void SwitchHelpRect(CFrameWnd * windowP);
+	void RandomizeMatches();
 	struct GameSquare
 	{
 		GameSquare();
@@ -80,9 +90,8 @@ private:
 	char highScore;
 	bool helpBtnPainted;
 	bool madeMatches;
+	bool startNewGame;
 	std::string helpBtnStatus; // UP is dark, DOWN is light
-	CRect gameRect;
-	CRect dataRect;
 	CRect specialRect;
 	CBitmap bgImage;
 	CBitmap squareSelector;

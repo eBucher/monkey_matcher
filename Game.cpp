@@ -18,14 +18,30 @@ using namespace std;
 Game::HelpButton::HelpButton()
 {
 	where = CRect(480, 625, 480 + 172, 625 + 40);
-	int res = downImage.LoadBitmapW(CString("HELP_BTN_DOWN_BMP"));
+	int res = HelpButtonImg.LoadBitmapW(CString("HELP_BTN_BMP"));
 }
 
 void Game::HelpButton::Display(CDC * deviceContextP)
 {
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
-	memDC.SelectObject(&downImage);
+	memDC.SelectObject(&HelpButtonImg);
+	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
+	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
+		172, 40, RGB(82, 82, 82));
+}
+
+Game::NewGameButton::NewGameButton()
+{
+	where = CRect(120, 625, 120 + 172, 625 + 40);
+	int res = NGButtonImg.LoadBitmapW(CString("NG_BTN_BMP"));
+}
+
+void Game::NewGameButton::Display(CDC * deviceContextP)
+{
+	CDC memDC;
+	memDC.CreateCompatibleDC(deviceContextP);
+	memDC.SelectObject(&NGButtonImg);
 	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
 	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
 		172, 40, RGB(82, 82, 82));
@@ -97,6 +113,7 @@ void Game::Init(int R, int C, int M)
 	movesLeft = M;
 	score = 0;
 	clickedRow1 = clickedCol1 = clickedRow2 = clickedCol2 = 0;
+	startNewGame = false;
 	// Create Grid, which is a 2d array of gridsquares
 	grid = new GameSquare *[numRows + 2];
 	for (int r = 0; r < numRows + 2; r++)
@@ -117,6 +134,7 @@ void Game::Init(int R, int C, int M)
 	}
 
 	FillIn();
+	RandomizeMatches();
 
 }
 
@@ -173,8 +191,9 @@ void Game::Display(CFrameWnd * windowP)
 			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC,
 			0, 0, sqWidth, sqHeight, RGB(82,82,82));
 	}
-	// This paints the help button
+	// This paints the help and new game buttons
 	HButton.Display(&dc);
+	NGButton.Display(&dc);
 
 	DeleteDC(memDC);
 }
@@ -200,10 +219,17 @@ void Game::ShowInformation(CDC * deviceContextP)
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
 	// This function will handle everything that needs to happen when the user makes a click.
+
 	// See if the instructions button was pressed.
 	if (HButton.where.left <= x && x <= HButton.where.right && HButton.where.top <= y && y <= HButton.where.bottom)
 	{
 		Instructions(windowP);
+	}
+
+	// See if the new game button was pressed.
+	if (NGButton.where.left <= x && x <= NGButton.where.right && NGButton.where.top <= y && y <= NGButton.where.bottom)
+	{
+		startNewGame = true;
 	}
 
 	float col = 0; // col starts as 0 by default.
@@ -247,9 +273,9 @@ bool Game::Done()
 {
 	// This function will return true once movesLeft == 0. Otherwise, it will
 	// return false.
-	if (movesLeft)
-		return false;
-	return true;
+	if (!movesLeft || startNewGame)
+		return true;
+	return false;
 }
 
 
@@ -263,7 +289,7 @@ void Game::SetUp(CRect rect)
 	windowWidth = rect.Width();
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
-	dataRect = CRect(0, 0, leftTileLeftX, bottomTileBottomY);
+	dataRect = CRect(0, 115, leftTileLeftX, bottomTileBottomY-200);
 
 
 }
@@ -310,7 +336,7 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 			madeMatches = true;
 		}
 		if (madeMatches)
-			BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_SYNC);
+			//BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_SYNC);
 		clickedRow1 = clickedRow2 = clickedCol1 = clickedCol2 = 0;
 		movesLeft--;
 	}
@@ -452,4 +478,31 @@ bool Game::HandleHorizontalMatch(int row_idx, int col_idx)
 	grid[row_idx][col_idx].flag = GOOD;
 	grid[row_idx][col_idx + 1].flag = GOOD;
 	return false;
+}
+
+void Game::RandomizeMatches()
+{
+	// This function is to be called at the beginning of the game so the user
+	// does not start off with any matches already made.
+	int what_value;
+	bool part_of_match;
+	for (int i = 1; i <= numRows; i++)
+		for (int j = 1; j <= numCols; j++)
+		{
+			part_of_match = true;
+			while (part_of_match)
+			{
+				what_value = grid[i][j].what;
+				// If it's part of a match:
+				if (IsVerticalMatch(i, j) ||
+					IsHorizontalMatch(i, j))
+				{
+					grid[i][j].what = 1 + rand() % NUMSYMS;
+				}
+				else
+				{
+					part_of_match = false;
+				}
+			}
+		}
 }

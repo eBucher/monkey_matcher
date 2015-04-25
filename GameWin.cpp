@@ -8,6 +8,8 @@
 #include <iostream>
 #include <mmsystem.h>
 
+#define WM_ERASEBKGND true
+
 GameWin::GameWin()
 {
 	// This function will:
@@ -26,7 +28,6 @@ GameWin::GameWin()
 
 afx_msg void GameWin::OnPaint()
 {
-	TRACE("\nPAINTED!\n");
 	// This function will:
 	myGame.Display(this);
 	if (firstTime)
