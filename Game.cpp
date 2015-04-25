@@ -9,12 +9,27 @@
 #include <vector>
 #include <algorithm>
 #include <mmsystem.h>
-#include <fstream>
 
 
 static CBitmap images[NUMIMAGES];
 
 using namespace std;
+
+Game::HelpButton::HelpButton()
+{
+	where = CRect(480, 625, 480 + 172, 625 + 40);
+	int res = downImage.LoadBitmapW(CString("HELP_BTN_DOWN_BMP"));
+}
+
+void Game::HelpButton::Display(CDC * deviceContextP)
+{
+	CDC memDC;
+	memDC.CreateCompatibleDC(deviceContextP);
+	memDC.SelectObject(&downImage);
+	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
+	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
+		172, 40, RGB(82, 82, 82));
+}
 
 Game::GameSquare::GameSquare()
 {
@@ -44,7 +59,7 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 Game::Game()
 {
 	// This function will:
-
+	srand(time(NULL));
 	numRows = 1;
 	numCols = 1;
 	grid = new GameSquare *[3];
@@ -60,14 +75,12 @@ Game::Game()
 	res = images[5].LoadBitmapW(CString("BLUE_BMP"));
 	res = images[6].LoadBitmapW(CString("PURPLE_BMP"));
 	res = squareSelector.LoadBitmapW(CString("SQUARE_SELECTOR_BMP"));
-	res = helpBtn.LoadBitmapW(CString("HELP_BTN_BMP"));
 
 }
 
 Game::~Game()
 {
 	// This function will:
-
 	for (int r = 0; r < numRows + 2; r++)
 		delete[] grid[r];
 	delete[] grid;
@@ -102,12 +115,6 @@ void Game::Init(int R, int C, int M)
 
 		}
 	}
-	// Gets the highscore from HS.txt
-	ifstream input;
-	input.open("HS.txt");
-	input >> highScore;
-	TRACE("HIGH SCORE: %d", highScore);
-	input.close();
 
 	FillIn();
 
@@ -163,12 +170,11 @@ void Game::Display(CFrameWnd * windowP)
 	{
 		memDC.SelectObject(&squareSelector);
 		dc.TransparentBlt(grid[clickedRow1][clickedCol1].where.left, grid[clickedRow1][clickedCol1].where.top,
-			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC, 0, 0, sqWidth, sqHeight, RGB(82,82,82));
+			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC,
+			0, 0, sqWidth, sqHeight, RGB(82,82,82));
 	}
 	// This paints the help button
-	memDC.SelectObject(&helpBtn);
-	dc.TransparentBlt(helpBtnRect.left, helpBtnRect.top,
-		helpBtnRect.Width(), helpBtnRect.Height(), &memDC, 0, 0, 172, 40, RGB(82,82,82));
+	HButton.Display(&dc);
 
 	DeleteDC(memDC);
 }
@@ -186,20 +192,16 @@ void Game::ShowInformation(CDC * deviceContextP)
 	scoreCString.Format(_T("%i"), score);
 	CString movesLeftCString;
 	movesLeftCString.Format(_T("%i"), movesLeft);
-	CString highScoreCString;
-	TRACE("HIGH SCORE: %d", highScore);
-	highScoreCString.Format(_T("%i"), highScore);
 	// This is where all the text gets put on the screen.
-	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString + "\nHigh Score: " + highScoreCString;
+	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString;
 	deviceContextP->DrawText(Message, CRect(25, 130, 700, 800), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
 void Game::Click(int y, int x, CFrameWnd * windowP)
 {
 	// This function will handle everything that needs to happen when the user makes a click.
-	TRACE("width: %d, height: %d", windowWidth, windowHeight);
 	// See if the instructions button was pressed.
-	if (helpBtnRect.left <= x && x <= helpBtnRect.right && helpBtnRect.top <= y && y <= helpBtnRect.bottom)
+	if (HButton.where.left <= x && x <= HButton.where.right && HButton.where.top <= y && y <= HButton.where.bottom)
 	{
 		Instructions(windowP);
 	}
@@ -262,7 +264,6 @@ void Game::SetUp(CRect rect)
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
 	dataRect = CRect(0, 0, leftTileLeftX, bottomTileBottomY);
-	helpBtnRect = CRect(480, 625, 480 + 172, 625 + 40);
 
 
 }

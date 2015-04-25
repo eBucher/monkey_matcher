@@ -7,6 +7,7 @@
 #define GAME_H
 
 #include <afxwin.h>
+#include <string>
 
 #define NUMSYMS 6
 #define NUMIMAGES 7
@@ -29,6 +30,14 @@ public:
 	bool Done();
 	void ShowInformation(CDC * deviceContextP);
 	bool modified;
+	struct HelpButton
+	{
+		HelpButton();
+		void Display(CDC * deviceContextP);
+		CRect where;
+		CBitmap downImage;
+	};
+	HelpButton HButton;
 private:
 	// Functions
 	void FillIn();
@@ -42,7 +51,7 @@ private:
 	bool IsHorizontalMatch(int row_idx, int col_idx);
 	bool HandleVerticalMatch(int row_idx, int col_idx);
 	bool HandleHorizontalMatch(int row_idx, int col_idx);
-	bool madeMatches;
+	void SwitchHelpRect(CFrameWnd * windowP);
 	struct GameSquare
 	{
 		GameSquare();
@@ -57,7 +66,6 @@ private:
 	int numMoves;
 	int movesLeft;
 	int score;
-	int multiplier;
 	int clickedRow1, clickedCol1;
 	int clickedRow2, clickedCol2;
 	bool firstClickDone;
@@ -71,14 +79,13 @@ private:
 	int bottomTileBottomY = 669;
 	char highScore;
 	bool helpBtnPainted;
-	bool backgroundPainted;
+	bool madeMatches;
+	std::string helpBtnStatus; // UP is dark, DOWN is light
 	CRect gameRect;
 	CRect dataRect;
 	CRect specialRect;
-	CRect helpBtnRect;
 	CBitmap bgImage;
 	CBitmap squareSelector;
-	CBitmap helpBtn;
 
 };
 

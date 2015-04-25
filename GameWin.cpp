@@ -26,6 +26,7 @@ GameWin::GameWin()
 
 afx_msg void GameWin::OnPaint()
 {
+	TRACE("\nPAINTED!\n");
 	// This function will:
 	myGame.Display(this);
 	if (firstTime)
@@ -38,6 +39,7 @@ afx_msg void GameWin::OnPaint()
 afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// This function will:
+	// See if the game is over
 	myGame.Click(point.y, point.x, this);
 	if (myGame.Done())
 	{
@@ -45,6 +47,7 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 		myGame.Init(numRows, numCols, numMoves);
 		Invalidate(TRUE);
 	}
+	// If the game has changed from the user making a click
 	// This is to update the entire window
 	if (myGame.modified == true)
 	{

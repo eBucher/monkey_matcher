@@ -20,4 +20,5 @@ private:
 	int numRows;
 	int numCols;
 	int numMoves;
+	bool inHelpBtn;
 };
