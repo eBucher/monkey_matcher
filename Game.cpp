@@ -81,6 +81,7 @@ Game::Game()
 	srand(time(NULL));
 	numRows = 1;
 	numCols = 1;
+	matchesMade = 0;
 	grid = new GameSquare *[3];
 	for (int r = 0; r < 3; r++)
 		grid[0] = new GameSquare[3];
@@ -117,6 +118,7 @@ void Game::Init(int R, int C, int M)
 	score = 0;
 	clickedRow1 = clickedCol1 = clickedRow2 = clickedCol2 = 0;
 	startNewGame = false;
+	matchesMade = 0;
 	// Create Grid, which is a 2d array of gridsquares
 	grid = new GameSquare *[numRows + 2];
 	for (int r = 0; r < numRows + 2; r++)
@@ -215,8 +217,11 @@ void Game::ShowInformation(CDC * deviceContextP)
 	scoreCString.Format(_T("%i"), score);
 	CString movesLeftCString;
 	movesLeftCString.Format(_T("%i"), movesLeft);
+	CString matchesMadeCString;
+	matchesMadeCString.Format(_T("%i"), matchesMade);
 	// This is where all the text gets put on the screen.
-	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString;
+	CString Message = "Score: " + scoreCString + "\nMoves Left: " + movesLeftCString +
+		"\nMatches: " + matchesMadeCString;
 	deviceContextP->DrawText(Message, CRect(25, 130, 700, 800), DT_LEFT); // Draws text on the screen in a rectangle
 }
 
@@ -370,6 +375,7 @@ int Game::Check()
 		}
 	if (matches > 0)
 		score += pow(3, matches);
+	matchesMade = matchesMade + matches;
 	return matches;
 }
 

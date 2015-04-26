@@ -87,6 +87,7 @@ private:
 	int topTileTopY = 28;
 	int rightTileRightX = 1361;
 	int bottomTileBottomY = 669;
+	int matchesMade;
 	char highScore;
 	bool madeMatches;
 	bool startNewGame;
