@@ -29,11 +29,6 @@ public:
 	void Message(CFrameWnd * windowP);
 	bool Done();
 	void ShowInformation(CDC * deviceContextP);
-	bool modified;
-	CRect helpBtnRect;
-	CRect NGBtnRect;
-	CRect gameRect;
-	CRect dataRect;
 private:
 	// Functions
 	void FillIn();
@@ -65,21 +60,23 @@ private:
 	int clickedRow1, clickedCol1;
 	int clickedRow2, clickedCol2;
 	bool firstClickDone;
-	int sqWidth = 80;
-	int sqHeight = 80;
-	int windowWidth = 1418;
-	int windowHeight = 698;
-	int leftTileLeftX = 720;
-	int topTileTopY = 28;
-	int rightTileRightX = 1361;
-	int bottomTileBottomY = 669;
+	int sqWidth;
+	int sqHeight;
+	int windowWidth;
+	int windowHeight;
+	int leftTileLeftX;
+	int topTileTopY;
+	int rightTileRightX;
+	int bottomTileBottomY;
 	int matchesMade;
-	int mostPoints;
 	char highScore;
 	bool madeMatches;
 	bool startNewGame;
 	bool showSquareSelector;
-	CRect specialRect;
+	CRect helpBtnRect;
+	CRect NGBtnRect;
+	CRect gameRect;
+	CRect dataRect;
 	CBitmap bgImage;
 	CBitmap squareSelector;
 

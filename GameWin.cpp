@@ -47,13 +47,6 @@ afx_msg void GameWin::OnLButtonDown(UINT nFlags, CPoint point)
 		myGame.Init(numRows, numCols, numMoves);
 		Invalidate(FALSE);
 	}
-	// If the game has changed from the user making a click
-	// This is to update the entire window
-	if (myGame.modified == true)
-	{
-		Invalidate(FALSE);
-		myGame.modified = false;
-	}
 }
 
 BEGIN_MESSAGE_MAP(GameWin, CFrameWnd)

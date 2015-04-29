@@ -53,6 +53,14 @@ Game::Game()
 {
 	// This function will:
 	srand(time(NULL));
+	sqWidth = 80;
+	sqHeight = 80;
+	windowWidth = 1418;
+	windowHeight = 698;
+	leftTileLeftX = 720;
+	topTileTopY = 28;
+	rightTileRightX = 1361;
+	bottomTileBottomY = 669;
 	numRows = 1;
 	numCols = 1;
 	matchesMade = 0;
@@ -93,7 +101,6 @@ void Game::Init(int R, int C, int M)
 	clickedRow1 = clickedCol1 = clickedRow2 = clickedCol2 = 0;
 	startNewGame = false;
 	matchesMade = 0;
-	mostPoints = 0;
 	// Create Grid, which is a 2d array of gridsquares
 	grid = new GameSquare *[numRows + 2];
 	for (int r = 0; r < numRows + 2; r++)
@@ -169,7 +176,7 @@ void Game::Display(CFrameWnd * windowP)
 		memDC.SelectObject(&squareSelector);
 		dc.TransparentBlt(grid[clickedRow1][clickedCol1].where.left, grid[clickedRow1][clickedCol1].where.top,
 			grid[clickedRow1][clickedCol1].where.Width(), grid[clickedRow1][clickedCol1].where.Height(), &memDC,
-			0, 0, sqWidth, sqHeight, RGB(82,82,82));
+			0, 0, sqWidth, sqHeight, RGB(82, 82, 82));
 		showSquareSelector = false;
 	}
 
@@ -245,17 +252,14 @@ void Game::Message(CFrameWnd * windowP)
 	// This function will pop up a window at the end of a game.
 
 	// Update the game before popping up the window.
-	Display(windowP);
 	windowP->Invalidate(FALSE);
 
 	CString scoreCString;
 	scoreCString.Format(_T("%i"), score);
 	CString matchesMadeCString;
 	matchesMadeCString.Format(_T("%i"), matchesMade);
-	CString pointsEarnedCString;
-	pointsEarnedCString.Format(_T("%i"), matchesMade);
-	CString message = "Final Score: " + scoreCString + "\nMatches Made: " + matchesMadeCString +
-		"\nMost Points Earned in one turn: " + pointsEarnedCString + "\nPress OK to play again.";
+	CString message = "Final Score: " + scoreCString + "\n\nMatches Made: " + matchesMadeCString +
+		"\n\nPress OK to play again.";
 	CString title = "FINAL RESULTS";
 	windowP->MessageBox(message, title);
 }
@@ -281,7 +285,7 @@ void Game::SetUp(CRect rect)
 	windowWidth = rect.Width();
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
-	dataRect = CRect(0, 115, leftTileLeftX, bottomTileBottomY-200);
+	dataRect = CRect(0, 115, leftTileLeftX, bottomTileBottomY - 200);
 	helpBtnRect = CRect(480, 625, 480 + 172, 625 + 40);
 	NGBtnRect = CRect(120, 625, 120 + 172, 625 + 40);
 
@@ -295,15 +299,14 @@ void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 	firstClickDone = true;
 	clickedRow1 = row;
 	clickedCol1 = col;
-	modified = true;
 	showSquareSelector = true;
+	windowP->InvalidateRect(gameRect, FALSE);
 
 }
 
 void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 {
 	// This function will:
-	modified = true;
 	// Check to see if the user clicked the same gamesquare twice.
 	// If they did, the first one is unselected.
 	if (row == clickedRow1 && col == clickedCol1)
@@ -335,6 +338,7 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 		clickedRow1 = clickedRow2 = clickedCol1 = clickedCol2 = 0;
 		movesLeft--;
 	}
+	windowP->Invalidate(FALSE);
 
 }
 
@@ -360,10 +364,7 @@ int Game::Check()
 		}
 	if (matches > 0)
 	{
-		int pointsEarned = pow(3, matches);
-		score += pointsEarned;
-		if (pointsEarned > mostPoints)
-			mostPoints = pointsEarned;
+		score += pow(3, matches);
 	}
 	matchesMade = matchesMade + matches;
 	return matches;
@@ -398,9 +399,9 @@ void Game::Drop(CFrameWnd * windowP)
 					swap(grid[checkingRow][j].flag,
 						grid[checkingRow + 1][j].flag);
 					// For animation, uncomment these next three lines.
-					//Display(windowP);
-					//windowP->Invalidate(FALSE);
-					//Sleep(200);
+					Display(windowP);
+					windowP->InvalidateRect(gameRect, FALSE);
+					Sleep(100);
 				}
 				else
 				{
