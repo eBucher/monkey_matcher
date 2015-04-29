@@ -15,39 +15,6 @@ static CBitmap images[NUMIMAGES];
 
 using namespace std;
 
-Game::HelpButton::HelpButton()
-{
-	where = CRect(480, 625, 480 + 172, 625 + 40);
-	int res = HelpButtonImg.LoadBitmapW(CString("HELP_BTN_BMP"));
-}
-
-void Game::HelpButton::Display(CDC * deviceContextP)
-{
-	CDC memDC;
-	memDC.CreateCompatibleDC(deviceContextP);
-	memDC.SelectObject(&HelpButtonImg);
-	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
-	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
-		172, 40, RGB(82, 82, 82));
-	DeleteDC(memDC);
-}
-
-Game::NewGameButton::NewGameButton()
-{
-	where = CRect(120, 625, 120 + 172, 625 + 40);
-	int res = NGButtonImg.LoadBitmapW(CString("NG_BTN_BMP"));
-}
-
-void Game::NewGameButton::Display(CDC * deviceContextP)
-{
-	CDC memDC;
-	memDC.CreateCompatibleDC(deviceContextP);
-	memDC.SelectObject(&NGButtonImg);
-	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
-	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
-		172, 40, RGB(82, 82, 82));
-	DeleteDC(memDC);
-}
 
 Game::GameSquare::GameSquare()
 {
@@ -68,7 +35,14 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 	// This function will:
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
-	memDC.SelectObject(&images[what]);
+	if (flag == GOOD)
+	{
+		memDC.SelectObject(&images[0]);
+	}
+	else
+	{
+		memDC.SelectObject(&images[what]);
+	}
 	deviceContextP->TransparentBlt(where.left + 1, where.top + 1,
 	where.Width() - 1, where.Height() - 1, &memDC, 0, 0,
 		80, 80, RGB(82, 82, 82));
@@ -197,9 +171,6 @@ void Game::Display(CFrameWnd * windowP)
 			0, 0, sqWidth, sqHeight, RGB(82,82,82));
 		showSquareSelector = false;
 	}
-	// This paints the help and new game buttons
-	//HButton.Display(&dc);
-	//NGButton.Display(&dc);
 
 	DeleteDC(memDC);
 }
@@ -230,13 +201,13 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 	// This function will handle everything that needs to happen when the user makes a click.
 
 	// See if the instructions button was pressed.
-	if (HButton.where.left <= x && x <= HButton.where.right && HButton.where.top <= y && y <= HButton.where.bottom)
+	if (helpBtnRect.left <= x && x <= helpBtnRect.right && helpBtnRect.top <= y && y <= helpBtnRect.bottom)
 	{
 		Instructions(windowP);
 	}
 
 	// See if the new game button was pressed.
-	if (NGButton.where.left <= x && x <= NGButton.where.right && NGButton.where.top <= y && y <= NGButton.where.bottom)
+	if (NGBtnRect.left <= x && x <= NGBtnRect.right && NGBtnRect.top <= y && y <= NGBtnRect.bottom)
 	{
 		startNewGame = true;
 	}
@@ -271,7 +242,8 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 void Game::Message(CFrameWnd * windowP)
 {
 	// This function will pop up a window at the end of a game.
-
+	Display(windowP);
+	windowP->Invalidate(FALSE);
 	CString message = "Put your end of game message here.\nUse backslash and n to create\nmultiple lines.";
 	CString title = "Winner";
 	windowP->MessageBox(message, title);
@@ -299,6 +271,8 @@ void Game::SetUp(CRect rect)
 	// Creates the area that the game will be played in
 	gameRect = CRect(leftTileLeftX, topTileTopY, rightTileRightX, bottomTileBottomY);
 	dataRect = CRect(0, 115, leftTileLeftX, bottomTileBottomY-200);
+	helpBtnRect = CRect(480, 625, 480 + 172, 625 + 40);
+	NGBtnRect = CRect(120, 625, 120 + 172, 625 + 40);
 
 
 }
@@ -341,12 +315,12 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 		madeMatches = false;
 		while (Check()) // While there is atleast one match
 		{
-			Drop();
+			Drop(windowP);
 			Replace();
 			madeMatches = true;
 		}
 		if (madeMatches)
-			//BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_SYNC);
+			BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
 		clickedRow1 = clickedRow2 = clickedCol1 = clickedCol2 = 0;
 		movesLeft--;
 	}
@@ -379,7 +353,7 @@ int Game::Check()
 	return matches;
 }
 
-void Game::Drop()
+void Game::Drop(CFrameWnd * windowP)
 {
 	// This function will shift down gamesquares in each column to fill in any
 	// gaps. Empty GameSquares at the top are filled by the Replace Function.
@@ -407,8 +381,10 @@ void Game::Drop()
 						grid[checkingRow + 1][j].what);
 					swap(grid[checkingRow][j].flag,
 						grid[checkingRow + 1][j].flag);
-					//Display();
-					//system("sleep .2");
+					// For animation, uncomment these next three lines.
+					//Display(windowP);
+					//windowP->Invalidate(FALSE);
+					//Sleep(200);
 				}
 				else
 				{
@@ -435,7 +411,6 @@ void Game::Replace()
 				grid[i][j].flag = NONE;
 			}
 		}
-	//Display();
 
 }
 

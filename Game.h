@@ -30,22 +30,8 @@ public:
 	bool Done();
 	void ShowInformation(CDC * deviceContextP);
 	bool modified;
-	struct HelpButton
-	{
-		HelpButton();
-		void Display(CDC * deviceContextP);
-		CRect where;
-		CBitmap HelpButtonImg;
-	};
-	struct NewGameButton
-	{
-		NewGameButton();
-		void Display(CDC * deviceContextP);
-		CRect where;
-		CBitmap NGButtonImg;
-	};
-	HelpButton HButton;
-	NewGameButton NGButton;
+	CRect helpBtnRect;
+	CRect NGBtnRect;
 	CRect gameRect;
 	CRect dataRect;
 private:
@@ -55,7 +41,7 @@ private:
 	void FirstClick(int row, int col, CFrameWnd * windowP);
 	void SecondClick(int row, int col, CFrameWnd * windowP);
 	int Check();
-	void Drop();
+	void Drop(CFrameWnd * windowP);
 	void Replace();
 	bool IsVerticalMatch(int row_idx, int col_idx);
 	bool IsHorizontalMatch(int row_idx, int col_idx);
