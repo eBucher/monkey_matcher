@@ -93,6 +93,7 @@ void Game::Init(int R, int C, int M)
 	clickedRow1 = clickedCol1 = clickedRow2 = clickedCol2 = 0;
 	startNewGame = false;
 	matchesMade = 0;
+	mostPoints = 0;
 	// Create Grid, which is a 2d array of gridsquares
 	grid = new GameSquare *[numRows + 2];
 	for (int r = 0; r < numRows + 2; r++)
@@ -121,11 +122,11 @@ void Game::Instructions(CFrameWnd * windowP)
 {
 	// This function will:
 
-	CString message = "GOAL: Make as many combinations of three identical\n"
-		"colors either vertically or horizontally within the\n"
-		"allotted number of moves.\n\n"
-		"MOVEMENT: When prompted, type in the column letter\n"
-		"and MORE INSTRUCTIONS GO HERE!!!!";
+	CString message = "GOAL: Make as many combinations of three or more of the\n"
+		"same colored monkeys. Each vertical or horizontal match of three\n"
+		"monkeys made in the same turn will exponentially increase your score.\n"
+		"When a match is made, the monkeys in the match will disappear and\n"
+		"all of the ones above the match will shift down.\n";
 
 	CString title = "Instructions";
 	windowP->MessageBox(message, title);
@@ -242,10 +243,20 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 void Game::Message(CFrameWnd * windowP)
 {
 	// This function will pop up a window at the end of a game.
+
+	// Update the game before popping up the window.
 	Display(windowP);
 	windowP->Invalidate(FALSE);
-	CString message = "Put your end of game message here.\nUse backslash and n to create\nmultiple lines.";
-	CString title = "Winner";
+
+	CString scoreCString;
+	scoreCString.Format(_T("%i"), score);
+	CString matchesMadeCString;
+	matchesMadeCString.Format(_T("%i"), matchesMade);
+	CString pointsEarnedCString;
+	pointsEarnedCString.Format(_T("%i"), matchesMade);
+	CString message = "Final Score: " + scoreCString + "\nMatches Made: " + matchesMadeCString +
+		"\nMost Points Earned in one turn: " + pointsEarnedCString + "\nPress OK to play again.";
+	CString title = "FINAL RESULTS";
 	windowP->MessageBox(message, title);
 }
 
@@ -348,7 +359,12 @@ int Game::Check()
 			}
 		}
 	if (matches > 0)
-		score += pow(3, matches);
+	{
+		int pointsEarned = pow(3, matches);
+		score += pointsEarned;
+		if (pointsEarned > mostPoints)
+			mostPoints = pointsEarned;
+	}
 	matchesMade = matchesMade + matches;
 	return matches;
 }
