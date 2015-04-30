@@ -14,4 +14,5 @@ SQUARE_SELECTOR_BMP BITMAP SquareSelector.bmp
 HELP_BTN_BMP BITMAP HelpButtonDown.bmp
 NG_BTN_BMP BITMAP NewGameButtonDown.bmp
 
+BG_MUSIC WAVE "game_music.wav"
 SOUND_WAV WAVE "MatchSound.wav"

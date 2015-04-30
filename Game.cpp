@@ -78,6 +78,9 @@ Game::Game()
 	res = images[6].LoadBitmapW(CString("PURPLE_BMP"));
 	res = squareSelector.LoadBitmapW(CString("SQUARE_SELECTOR_BMP"));
 
+	BOOL soundPlayed = PlaySound(L"BG_MUSIC", GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
+
+
 }
 
 Game::~Game()
@@ -333,8 +336,6 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 			Replace();
 			madeMatches = true;
 		}
-		if (madeMatches)
-			BOOL soundPlayed = PlaySound(L"SOUND_WAV", GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
 		clickedRow1 = clickedRow2 = clickedCol1 = clickedCol2 = 0;
 		movesLeft--;
 	}
