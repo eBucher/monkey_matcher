@@ -1,7 +1,8 @@
 // File: Game.h
-// Author: 
+// Author: Erich Bucher
 // Project: CS215 Project 3 Spring 2015
-// Description of file contents:
+// Description of file contents: This is the .h file that
+//   corresponds with Game.cpp to define the Game class.
 
 #ifndef GAME_H
 #define GAME_H
@@ -17,7 +18,8 @@ enum flag_types { NONE, SELECTED, POSSIBLE, GOOD };
 class Game
 {
 public:
-	// Functions
+
+	// Public Functions
 	Game();
 	Game(const Game & other);
 	~Game();
@@ -30,7 +32,8 @@ public:
 	bool Done();
 	void ShowInformation(CDC * deviceContextP);
 private:
-	// Functions
+
+	// Private Functions
 	void FillIn();
 	void SetUp(CRect window);
 	void FirstClick(int row, int col, CFrameWnd * windowP);
@@ -51,34 +54,33 @@ private:
 		flag_types flag;
 		CRect where;
 	};
-	// Variables
-	GameSquare ** grid;
-	int numRows, numCols;
-	int numMoves;
-	int movesLeft;
-	int score;
-	int clickedRow1, clickedCol1;
-	int clickedRow2, clickedCol2;
+	// Private Variables
 	bool firstClickDone;
-	int sqWidth;
-	int sqHeight;
-	int windowWidth;
-	int windowHeight;
-	int leftTileLeftX;
-	int topTileTopY;
-	int rightTileRightX;
-	int bottomTileBottomY;
-	int matchesMade;
-	char highScore;
 	bool madeMatches;
-	bool startNewGame;
 	bool showSquareSelector;
+	bool startNewGame;
+	CBitmap bgImage;
+	CBitmap squareSelector;	char highScore;
+	CRect dataRect;
+	CRect gameRect;
 	CRect helpBtnRect;
 	CRect NGBtnRect;
-	CRect gameRect;
-	CRect dataRect;
-	CBitmap bgImage;
-	CBitmap squareSelector;
+	GameSquare ** grid;
+	int bottomTileBottomY;
+	int clickedRow1, clickedCol1;
+	int clickedRow2, clickedCol2;
+	int leftTileLeftX;
+	int matchesMade;
+	int movesLeft;
+	int numMoves;
+	int numRows, numCols;
+	int rightTileRightX;
+	int score;
+	int sqHeight;
+	int sqWidth;
+	int topTileTopY;
+	int windowHeight;
+	int windowWidth;
 
 };
 

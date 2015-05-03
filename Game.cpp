@@ -1,7 +1,8 @@
 // File: Game.cpp
 // Author: Erich Bucher
 // Project: CS215 Project 3 Spring 2015
-// Description of file contents:
+// Description of file contents: This file handles everything related to the
+//    game and the gamesquares.
 
 #include "Game.h"
 #include <time.h>
@@ -32,9 +33,11 @@ Game::GameSquare::GameSquare()
 
 void Game::GameSquare::Display(CDC * deviceContextP)
 {
-	// This function will:
+	// This function displays the GameSquare that calls it.
 	CDC memDC;
 	memDC.CreateCompatibleDC(deviceContextP);
+
+	// GameSquares flagged as GOOD are not displayed.
 	if (flag == GOOD)
 	{
 		memDC.SelectObject(&images[0]);
@@ -51,7 +54,9 @@ void Game::GameSquare::Display(CDC * deviceContextP)
 
 Game::Game()
 {
-	// This function will:
+	// This function is the default constructor for the class. It sets all of the
+	// information that only needs to be set once, such as dimensions.
+	// This is also where all of the images are loaded.
 	srand(time(NULL));
 	sqWidth = 80;
 	sqHeight = 80;
@@ -78,6 +83,7 @@ Game::Game()
 	res = images[6].LoadBitmapW(CString("PURPLE_BMP"));
 	res = squareSelector.LoadBitmapW(CString("SQUARE_SELECTOR_BMP"));
 
+	// This plays the music.
 	BOOL soundPlayed = PlaySound(L"BG_MUSIC", GetModuleHandle(NULL), SND_RESOURCE | SND_ASYNC);
 
 
@@ -85,7 +91,7 @@ Game::Game()
 
 Game::~Game()
 {
-	// This function will:
+	// This function will delete the game board.
 	for (int r = 0; r < numRows + 2; r++)
 		delete[] grid[r];
 	delete[] grid;
@@ -93,7 +99,7 @@ Game::~Game()
 
 void Game::Init(int R, int C, int M)
 {
-	// This function will:
+	// This function initializes everything for a new game.
 
 	// Reset all of the variables from the last game
 	numRows = R;
@@ -130,13 +136,16 @@ void Game::Init(int R, int C, int M)
 
 void Game::Instructions(CFrameWnd * windowP)
 {
-	// This function will:
+	// This function will displays the instructions that appear
+	// when someone starts a new game.
 
 	CString message = "GOAL: Make as many combinations of three or more of the\n"
 		"same colored monkeys. Each vertical or horizontal match of three\n"
 		"monkeys made in the same turn will exponentially increase your score.\n"
 		"When a match is made, the monkeys in the match will disappear and\n"
-		"all of the ones above the match will shift down.\n";
+		"all of the ones above the match will shift down.\n\n"
+		"Monkeys can be moved to any location. A match does not have to be made "
+		"on every turn.\n\n Good luck.";
 
 	CString title = "Instructions";
 	windowP->MessageBox(message, title);
@@ -154,7 +163,9 @@ void Game::FillIn()
 
 void Game::Display(CFrameWnd * windowP)
 {
-	// This function will:
+	// This function will display everything that needs to be on the screen.
+	// It should only be used in the beginning when first drawing the
+	// screen and when updating the text on the left side.
 
 	CPaintDC dc(windowP);
 	CRect rect;
@@ -252,7 +263,8 @@ void Game::Click(int y, int x, CFrameWnd * windowP)
 
 void Game::Message(CFrameWnd * windowP)
 {
-	// This function will pop up a window at the end of a game.
+	// This function will pop up a window at the end of a game
+	// that displays information about the game such as the score.
 
 	// Update the game before popping up the window.
 	windowP->Invalidate(FALSE);
@@ -270,8 +282,9 @@ void Game::Message(CFrameWnd * windowP)
 
 bool Game::Done()
 {
-	// This function will return true once movesLeft == 0. Otherwise, it will
-	// return false.
+	// This function will return true once movesLeft == 0 or the user
+	// presses the new game button (causing startNewGame to be true.
+	// Otherwise, it will return false.
 	if (!movesLeft || startNewGame)
 		return true;
 	return false;
@@ -309,7 +322,9 @@ void Game::FirstClick(int row, int col, CFrameWnd * windowP)
 
 void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 {
-	// This function will:
+	// This function will handle everything that needs to
+	// happen when the user clicks on a second GameSquare.
+
 	// Check to see if the user clicked the same gamesquare twice.
 	// If they did, the first one is unselected.
 	if (row == clickedRow1 && col == clickedCol1)
@@ -327,10 +342,11 @@ void Game::SecondClick(int row, int col, CFrameWnd * windowP)
 			grid[clickedRow2][clickedCol2].what);
 		swap(grid[clickedRow1][clickedCol1].flag,
 			grid[clickedRow2][clickedCol2].flag);
-		//system("sleep 2"); // FIGURE OUT A WAY TO LAG IT
 		firstClickDone = false;
 		madeMatches = false;
-		while (Check()) // While there is atleast one match
+
+		// While there is atleast one match
+		while (Check())
 		{
 			Drop(windowP);
 			Replace();

@@ -1,7 +1,8 @@
 // File: GameWin.h
 // Author: 
 // Project: CS215 Project 3 Spring 2015
-// Description of file contents:
+// Description of file contents: This is the header file for GameWin.cpp and
+//   modifying the GameWin class.
 
 #include <afxwin.h>
 #include "Game.h"

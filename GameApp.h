@@ -1,7 +1,6 @@
 // File: GameApp.h
-// Author: 
+// Author: Erich Bucher
 // Project: CS215 Project 3 Spring 2015
-// Description of file contents:
 
 #include <afxwin.h>
 #include "GameWin.h"
